@@ -20,6 +20,7 @@ namespace ModernStaggerLock
 		PrintSettingValue(MediumStaggerMagnitude);
 		PrintSettingValue(LargeStaggerMagnitude);
 		PrintSettingValue(LargestStaggerMagnitude);
+		PrintSettingValue(DisableJumpWhenStagger);
 
 		auto MSLFilesName = DKUtil::Config::GetAllFiles<false>("Data\\SKSE\\Plugins\\ModernStaggerLock"sv, ".json"sv, {}, "_MSL"sv);
 		for (const auto& fileName : MSLFilesName) {
@@ -34,7 +35,7 @@ namespace ModernStaggerLock
 			}
 		}
 
-		for (auto eventName : quickRecoveryEvents) {
+		for (std::string eventName : quickRecoveryEvents) {
 			INFO("Get a Quick Recovery Event Name: \"{}\"", eventName);
 		}
 	}

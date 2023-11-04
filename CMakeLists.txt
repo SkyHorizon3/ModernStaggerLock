@@ -17,6 +17,8 @@ project(
 	LANGUAGES CXX
 )
 
+add_definitions(-D_SILENCE_CXX23_DENORM_DEPRECATION_WARNING)
+
 # out-of-source builds only
 if(${PROJECT_SOURCE_DIR} STREQUAL ${PROJECT_BINARY_DIR})
 	message(FATAL_ERROR "In-source builds are not allowed.")
@@ -51,7 +53,7 @@ source_group(
 )
 
 # dependencies
-add_subdirectory($ENV{CommonLibSSEPath} CommonLibSSE)
+add_subdirectory($ENV{CommonLibSSEPath} CommonLibSSE) #https://github.com/max-su-2019/CommonLibSSE
 add_subdirectory($ENV{DKUtilPath} DKUtil)
 find_package(spdlog CONFIG REQUIRED)
 
@@ -128,15 +130,15 @@ target_precompile_headers(
 )
 
 # post build event
-add_custom_command(
-	TARGET 
-		${PROJECT_NAME}
-	POST_BUILD
-		COMMAND 
-			powershell -NoProfile -ExecutionPolicy Bypass -File "${CMAKE_CURRENT_SOURCE_DIR}/!Update.ps1" "COPY" "${PROJECT_VERSION}" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$(ConfigurationName)" "${PROJECT_NAME}" "${ANNIVERSARY_EDITION}"
-		COMMENT 
-			"Updating project :))"
-)
+#add_custom_command(
+#	TARGET 
+#		${PROJECT_NAME}
+#	POST_BUILD
+#		COMMAND 
+#			powershell -NoProfile -ExecutionPolicy Bypass -File "${CMAKE_CURRENT_SOURCE_DIR}/!Update.ps1" "COPY" "${PROJECT_VERSION}" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$(ConfigurationName)" "${PROJECT_NAME}" "${ANNIVERSARY_EDITION}"
+#		COMMENT 
+#			"Updating project :))"
+#)
 
 # called via !Rebuild.ps1
 if(DEFINED GROUP)

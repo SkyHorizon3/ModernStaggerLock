@@ -39,7 +39,7 @@ namespace ModernStaggerLock
 				}
 
 				return 1;
-			};
+				};
 			auto staggerlevel = GetStaggerLevel(staggerMagnitude);
 			actorRef->SetGraphVariableInt("msl_staggerLevel", staggerlevel);
 
@@ -112,10 +112,10 @@ namespace ModernStaggerLock
 
 		static auto SetStaggerVariable = [](RE::Actor* a_actor, const std::string_view eventTag) {
 			std::int32_t SmallStaggerCounter = 0,
-						 MediumStaggerCounter = 0,
-						 LargeStaggerCounter = 0,
-						 LargestStaggerCounter = 0,
-						 SpecialStaggerCounter = 0;
+				MediumStaggerCounter = 0,
+				LargeStaggerCounter = 0,
+				LargestStaggerCounter = 0,
+				SpecialStaggerCounter = 0;
 
 			switch (HashToUInt(eventTag.data(), eventTag.size())) {
 			case "staggerStop"_h:
@@ -160,7 +160,7 @@ namespace ModernStaggerLock
 			a_actor->SetGraphVariableInt("msl_LargeStaggerCounter", LargeStaggerCounter);
 			a_actor->SetGraphVariableInt("msl_LargestStaggerCounter", LargestStaggerCounter);
 			a_actor->SetGraphVariableInt("msl_SpecialStaggerCounter", SpecialStaggerCounter);
-		};
+			};
 
 		static std::vector<std::string_view> events = {
 			{ "staggerStop" },

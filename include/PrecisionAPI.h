@@ -394,7 +394,7 @@ namespace PRECISION_API
 	/// <returns>The pointer to the API singleton, or nullptr if request failed</returns>
 	[[nodiscard]] inline void* RequestPluginAPI(const InterfaceVersion a_interfaceVersion = InterfaceVersion::V4)
 	{
-		auto pluginHandle = GetModuleHandle("Precision.dll");
+		auto pluginHandle = GetModuleHandleA("Precision.dll");
 		_RequestPluginAPI requestAPIFunction = (_RequestPluginAPI)SKSE::WinAPI::GetProcAddress(pluginHandle, "RequestPluginAPI");
 		if (requestAPIFunction) {
 			return requestAPIFunction(a_interfaceVersion);

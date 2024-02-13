@@ -1,136 +1,37 @@
 {
-	"version": 3,
-	"cmakeMinimumRequired": {
-		"major": 3,
-		"minor": 21,
-		"patch": 0
-	},
-	"configurePresets": [
-		{
-			"name": "common",
-			"hidden": true,
-			"cacheVariables": {
-				"SKSE_SUPPORT_XBYAK": "ON",
-				"SKSEPluginAuthor": "$env{SKSEPluginAuthor}"
-			}
-		},
-		{
-			"name": "vcpkg",
-			"hidden": true,
-			"cacheVariables": {
-				"CMAKE_TOOLCHAIN_FILE": {
-					"type": "STRING",
-					"value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
-				},
-				"VCPKG_TARGET_TRIPLET": "x64-windows-static-md"
-			}
-		},
-		{
-			"name": "win64",
-			"hidden": true,
-			"architecture": "x64",
-			"cacheVariables": {
-				"CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL"
-			}
-		},
-		{
-			"name": "msvc",
-			"hidden": true,
-			"cacheVariables": {
-				"CMAKE_CXX_FLAGS": "/EHsc /MP /W4 /WX $penv{CXXFLAGS}"
-			},
-			"generator": "Visual Studio 17 2022",
-			"vendor": {
-				"microsoft.com/VisualStudioSettings/CMake/1.0": {
-					"intelliSenseMode": "windows-msvc-x64",
-					"enableMicrosoftCodeAnalysis": true,
-					"enableClangTidyCodeAnalysis": true
-				}
-			}
-		},
-		{
-			"name": "AE",
-			"cacheVariables": {
-				"ENABLE_SKYRIM_AE": "ON",
-				"ENABLE_SKYRIM_SE": "OFF",
-				"ENABLE_SKYRIM_VR": "OFF"
-			},
-			"inherits": [
-				"common",
-				"vcpkg",
-				"win64",
-				"msvc"
-			]
-		},
-		{
-			"name": "SE",
-			"cacheVariables": {
-				"ENABLE_SKYRIM_AE": "OFF",
-				"ENABLE_SKYRIM_SE": "ON",
-				"ENABLE_SKYRIM_VR": "OFF"
-			},
-			"inherits": [
-				"common",
-				"vcpkg",
-				"win64",
-				"msvc"
-			]
-		},
-		{
-			"name": "VR",
-			"cacheVariables": {
-				"ENABLE_SKYRIM_AE": "OFF",
-				"ENABLE_SKYRIM_SE": "OFF",
-				"ENABLE_SKYRIM_VR": "ON"
-			},
-			"inherits": [
-				"common",
-				"vcpkg",
-				"win64",
-				"msvc"
-			]
-		},
-		{
-			"name": "ALL",
-			"cacheVariables": {
-				"ENABLE_SKYRIM_AE": "ON",
-				"ENABLE_SKYRIM_SE": "ON",
-				"ENABLE_SKYRIM_VR": "ON"
-			},
-			"inherits": [
-				"common",
-				"vcpkg",
-				"win64",
-				"msvc"
-			]
-		},
-		{
-			"name": "PRE-AE",
-			"cacheVariables": {
-				"ENABLE_SKYRIM_AE": "OFF",
-				"ENABLE_SKYRIM_SE": "ON",
-				"ENABLE_SKYRIM_VR": "ON"
-			},
-			"inherits": [
-				"common",
-				"vcpkg",
-				"win64",
-				"msvc"
-			]
-		},
-		{
-			"name": "FLATRIM",
-			"cacheVariables": {
-				"ENABLE_SKYRIM_AE": "ON",
-				"ENABLE_SKYRIM_SE": "ON",
-				"ENABLE_SKYRIM_VR": "OFF"
-			},
-			"inherits": [
-				"common",
-				"vcpkg",
-				"win64",
-				"msvc"
-			]
-		}
-	]
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "installDir": "${sourceDir}/install/${presetName}",
+      "architecture": {
+        "value": "x64",
+        "strategy": "external"
+      },
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "cl.exe",
+        "CMAKE_CXX_FLAGS": "/permissive- /Zc:preprocessor /EHsc /MP /W4 -DWIN32_LEAN_AND_MEAN -DNOMINMAX -DUNICODE -D_UNICODE",
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+        "VCPKG_TARGET_TRIPLET": "x64-windows-static",
+        "VCPKG_OVERLAY_TRIPLETS": "${sourceDir}/cmake",
+        "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreaded$<$<CONFIG:Debug>:Debug>",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      }
+    },
+    {
+      "name": "debug",
+      "inherits": [ "base" ],
+      "displayName": "Debug",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
+    },
+    {
+      "name": "release",
+      "inherits": [ "base" ],
+      "displayName": "Release",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
+    }
+  ]
 }

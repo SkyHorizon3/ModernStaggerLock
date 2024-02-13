@@ -13,7 +13,7 @@ using namespace std::literals;
 using namespace REL::literals;
 
 // Version
-#include "Version.h"
+#include "Plugin.h"
 
 // DKUtil
 #include "DKUtil/Logger.hpp"

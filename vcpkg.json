@@ -1,12 +1,16 @@
 {
   "name": "modernstaggerlock",
-  "version-string": "1.0.0",
-  "description": "Modern Stagger Lock",
+  "version-semver": "1.1.6",
+  "description": "",
   "license": "MIT",
-  "dependencies": ["spdlog"],
-  "features": {
-    "mo2-install": {
-      "description": "Modern Stagger Lock"
-    }
-  }
+  "dependencies": [
+    "spdlog",
+    "directxtk",
+    "catch2",
+    "rapidcsv",
+    "nlohmann-json",
+    "xbyak",
+    "simpleini"
+  ],
+  "builtin-baseline": "91b17dd72add5718332e9a2bf55497e2b126b0a0"
 }

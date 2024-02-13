@@ -1,4 +1,4 @@
-#include "OpenAnimationReplacerAPI-Conditions.h"
+#include "../include/OpenAnimationReplacer/API/OpenAnimationReplacerAPI-Conditions.h"
 
 OAR_API::Conditions::IConditionsInterface* g_oarConditionsInterface = nullptr;
 
@@ -10,7 +10,7 @@ namespace OAR_API::Conditions
 			return g_oarConditionsInterface;
 		}
 
-		const auto pluginHandle = GetModuleHandle("OpenAnimationReplacer.dll");
+		const auto pluginHandle = GetModuleHandleA("OpenAnimationReplacer.dll");
 		const auto requestAPIFunction = static_cast<_RequestPluginAPI_Conditions>(SKSE::WinAPI::GetProcAddress(pluginHandle, "RequestPluginAPI_Conditions"));
 		if (!requestAPIFunction) {
 			return nullptr;

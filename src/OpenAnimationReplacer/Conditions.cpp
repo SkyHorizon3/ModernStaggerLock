@@ -1,4 +1,4 @@
-#include "Conditions.h"
+#include "../include/OpenAnimationReplacer/Conditions.h"
 #include "SpecialStaggerHandler.h"
 
 namespace ModernStaggerLock

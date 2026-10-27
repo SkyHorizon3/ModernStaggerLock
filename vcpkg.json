@@ -1,22 +1,11 @@
 {
   "name": "modernstaggerlock",
-  "version-semver": "1.0.7",
+  "version-string": "1.0.7",
   "description": "",
-  "license": "MIT",
   "dependencies": [
-    "spdlog",
-    "directxtk",
-    "catch2",
-    "rapidcsv",
-    "xbyak",
-    "nlohmann-json",
+    "commonlibsse-ng",
+	"nlohmann-json",
     "simpleini"
   ],
-  "builtin-baseline": "cd1099f42a3c2ee28dc68e3db3f6f88658982736",
-  "overrides": [
-    {
-      "name": "xbyak",
-      "version": "7.23.1"
-    }
-  ]
+  "builtin-baseline": "eb2d3a3279fd019cb7733072d86900d0ad2a1aef"
 }

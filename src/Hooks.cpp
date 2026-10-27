@@ -3,18 +3,6 @@
 
 namespace ModernStaggerLock
 {
-	inline bool IsStaggering(const RE::Actor* actor)
-	{
-		if (!actor)
-			return false;
-
-		auto result = false;
-		if (actor->GetGraphVariableBool("IsStaggering", result) && result)
-			return result;
-
-		return static_cast<bool>(actor->AsActorState()->actorState2.staggered);
-	}
-
 	bool NotifyAnimationGraphHook::ProcessStaggerHanlder(RE::IAnimationGraphManagerHolder* a_graphMgr, const RE::BSFixedString& a_eventName)
 	{
 		using StaggerType = MSLSettings::StaggerType;
@@ -34,10 +22,10 @@ namespace ModernStaggerLock
 			auto GetStaggerLevel = [](const float staggerMagnitude) -> std::int32_t {
 				auto mslSetting = MSLSettings::GetSingleton();
 				const float StaggerLevelRange[StaggerType::kTotal] = {
-					*mslSetting->SmallStaggerMagnitude,
-					*mslSetting->MediumStaggerMagnitude,
-					*mslSetting->LargeStaggerMagnitude,
-					*mslSetting->LargestStaggerMagnitude
+					mslSetting->SmallStaggerMagnitude,
+					mslSetting->MediumStaggerMagnitude,
+					mslSetting->LargeStaggerMagnitude,
+					mslSetting->LargestStaggerMagnitude
 				};
 
 				for (std::int32_t i = StaggerType::kLargest; i >= StaggerType::kSmall; i--) {
@@ -60,7 +48,7 @@ namespace ModernStaggerLock
 	bool NotifyAnimationGraphHook::ShouldQuickRecovery(RE::IAnimationGraphManagerHolder* a_graphMgr, const RE::BSFixedString& a_eventName)
 	{
 		auto actorRef = a_graphMgr ? skyrim_cast<RE::Actor*>(a_graphMgr) : nullptr;
-		if (!actorRef || !IsStaggering(actorRef))
+		if (!actorRef || !actorRef->IsStaggering())
 			return false;
 
 		bool shouldQuickRecovery = false;
@@ -83,7 +71,7 @@ namespace ModernStaggerLock
 			auto playerRef = RE::PlayerCharacter::GetSingleton();
 			auto settings = MSLSettings::GetSingleton();
 
-			if (playerRef && IsStaggering(playerRef) && *settings->DisableJumpWhenStagger) {
+			if (playerRef && playerRef->IsStaggering() && settings->DisableJumpWhenStagger) {
 				return false;
 			}
 		}

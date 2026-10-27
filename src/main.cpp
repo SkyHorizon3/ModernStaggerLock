@@ -1,17 +1,16 @@
 #include "LoadGame.h"
 
-extern "C" DLLEXPORT constinit auto SKSEPlugin_Version = []() {
+SKSE_PLUGIN_VERSION = []() {
 	SKSE::PluginVersionData v;
 	v.PluginName(Plugin::NAME);
 	v.PluginVersion(Plugin::VERSION);
-	v.AuthorName("Maxsu and SkyHorizon"sv);
+	v.AuthorName("Maxsu and SkyHorizon");
 	v.UsesAddressLibrary();
 	v.UsesNoStructs();
-
 	return v;
 }();
 
-extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Query(const SKSE::QueryInterface*, SKSE::PluginInfo* pluginInfo)
+SKSE_PLUGIN_QUERY(const SKSE::QueryInterface*, SKSE::PluginInfo* pluginInfo)
 {
 	pluginInfo->name = SKSEPlugin_Version.pluginName;
 	pluginInfo->infoVersion = SKSE::PluginInfo::kVersion;
@@ -19,7 +18,7 @@ extern "C" DLLEXPORT bool SKSEAPI SKSEPlugin_Query(const SKSE::QueryInterface*, 
 	return true;
 }
 
-DLLEXPORT bool SKSEAPI SKSEPlugin_Load(const SKSE::LoadInterface* a_skse)
+SKSE_PLUGIN_LOAD(const SKSE::LoadInterface* skse)
 {
 	/*
 #ifndef NDEBUG
@@ -29,26 +28,18 @@ DLLEXPORT bool SKSEAPI SKSEPlugin_Load(const SKSE::LoadInterface* a_skse)
 #endif
 	*/
 
-	DKUtil::Logger::Init(Plugin::NAME, REL::Module::get().version().string());
+	SKSE::Init(skse, true);
+	spdlog::set_pattern("[%H:%M:%S:%e] [%l] %v"s);
 
-	//REL::Module::reset();
-	SKSE::Init(a_skse, false);
+	SKSE::log::info("Game version: {}", skse->RuntimeVersion());
 
-	if (REL::Module::IsSE()) {
-		const auto message = std::format("Modern Stagger Lock AE is not compatible with version {} and below. Please use the original version.", a_skse->RuntimeVersion());
-		SKSE::stl::report_and_fail(message);
-	}
-
-	INFO("{} v{} loaded", Plugin::NAME, Plugin::VERSION);
-
-	// do stuff
-	auto g_message = SKSE::GetMessagingInterface();
-	if (!g_message) {
-		ERROR("Messaging Interface Not Found!");
+	auto message = SKSE::GetMessagingInterface();
+	if (!message) {
+		SKSE::log::error("Messaging Interface Not Found!");
 		return false;
 	}
 
-	g_message->RegisterListener(ModernStaggerLock::EventCallback);
+	message->RegisterListener(ModernStaggerLock::EventCallback);
 
 	return true;
 }

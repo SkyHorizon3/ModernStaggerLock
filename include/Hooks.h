@@ -12,7 +12,7 @@ namespace ModernStaggerLock
 			{
 				REL::Relocation<std::uintptr_t> CharacterVtbl{ VTABLE[3] };
 				func = CharacterVtbl.write_vfunc(0x1, &Hook_NotifyAnimationGraph);
-				INFO("Hook NPC NotifyAnimationGraph!");
+				SKSE::log::info("Hook NPC NotifyAnimationGraph!");
 			}
 
 		private:
@@ -37,7 +37,7 @@ namespace ModernStaggerLock
 			{
 				REL::Relocation<std::uintptr_t> PlayerCharacterVtbl{ VTABLE[3] };
 				func = PlayerCharacterVtbl.write_vfunc(0x1, &Hook_NotifyAnimationGraph);
-				INFO("Hook PC NotifyAnimationGraph!");
+				SKSE::log::info("Hook PC NotifyAnimationGraph!");
 			}
 
 		private:
@@ -73,7 +73,7 @@ namespace ModernStaggerLock
 		{
 			REL::Relocation<std::uintptr_t> JumpHandlerVtbl{ VTABLE[0] };
 			func = JumpHandlerVtbl.write_vfunc(0x1, &Hook_CanProcess);
-			INFO("Hook DisableStaggerJumpHook!");
+			SKSE::log::info("Hook DisableStaggerJumpHook!");
 		}
 
 	private:

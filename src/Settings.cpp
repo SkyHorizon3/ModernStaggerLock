@@ -4,24 +4,56 @@ namespace ModernStaggerLock
 {
 	using json = nlohmann::json;
 
-	static auto MainConfig = COMPILE_PROXY("ModernStaggerLock.ini"sv);
+	inline std::string tolower(std::string_view a_str)
+	{
+		std::string result(a_str);
+		std::ranges::transform(result, result.begin(), [](unsigned char ch) { return static_cast<unsigned char>(std::tolower(ch)); });
+		return result;
+	}
+
+	std::vector<std::string> MSLSettings::GetFiles()
+	{
+		std::vector<std::string> files;
+
+		constexpr const char* PATH = "Data/SKSE/Plugins/ModernStaggerLock";
+		if (!std::filesystem::exists(PATH))
+			return files;
+
+		for (const auto& entry : std::filesystem::directory_iterator(PATH)) {
+			if (entry.is_regular_file()) {
+				const auto jsonPath = tolower(entry.path().string());
+				if (jsonPath.ends_with("_msl.json")) {
+					files.emplace_back(jsonPath);
+				}
+			}
+		}
+		return files;
+	}
 
 	MSLSettings::MSLSettings()
 	{
-		MainConfig.Bind<0.0, 1.0>(SmallStaggerMagnitude, 0.0);
-		MainConfig.Bind<0.0, 1.0>(MediumStaggerMagnitude, 0.5);
-		MainConfig.Bind<0.0, 1.0>(LargeStaggerMagnitude, 0.75);
-		MainConfig.Bind<0.0, 1.0>(LargestStaggerMagnitude, 1.0);
-		MainConfig.Bind(DisableJumpWhenStagger, true);
+		const auto path = std::format("Data/SKSE/Plugins/{}.ini", Plugin::NAME);
 
-		MainConfig.Load();
+		CSimpleIniA ini;
+		ini.SetUnicode();
+		ini.LoadFile(path.c_str());
 
-		PrintSettingValue(SmallStaggerMagnitude);
-		PrintSettingValue(MediumStaggerMagnitude);
-		PrintSettingValue(LargeStaggerMagnitude);
-		PrintSettingValue(LargestStaggerMagnitude);
+		constexpr const char* sectionControl = "Control";
+		DisableJumpWhenStagger = ini.GetBoolValue(sectionControl, "DisableJumpWhenStagger");
 
-		auto MSLFilesName = DKUtil::Config::GetAllFiles<false>("Data\\SKSE\\Plugins\\ModernStaggerLock"sv, ".json"sv, {}, "_MSL"sv);
+		constexpr const char* sectionStaggerLevel = "StaggerLevel";
+		SmallStaggerMagnitude = std::clamp(static_cast<float>(ini.GetDoubleValue(sectionStaggerLevel, "SmallStaggerMagnitude")), 0.0f, 1.0f);
+		MediumStaggerMagnitude = std::clamp(static_cast<float>(ini.GetDoubleValue(sectionStaggerLevel, "MediumStaggerMagnitude")), 0.0f, 1.0f);
+		LargeStaggerMagnitude = std::clamp(static_cast<float>(ini.GetDoubleValue(sectionStaggerLevel, "LargeStaggerMagnitude")), 0.0f, 1.0f);
+		LargestStaggerMagnitude = std::clamp(static_cast<float>(ini.GetDoubleValue(sectionStaggerLevel, "LargestStaggerMagnitude")), 0.0f, 1.0f);
+
+		SKSE::log::info("Setting:\"{}\" is {}", "DisableJumpWhenStagger", DisableJumpWhenStagger);
+		SKSE::log::info("Setting:\"{}\" is {}", "SmallStaggerMagnitude", SmallStaggerMagnitude);
+		SKSE::log::info("Setting:\"{}\" is {}", "MediumStaggerMagnitude", MediumStaggerMagnitude);
+		SKSE::log::info("Setting:\"{}\" is {}", "LargeStaggerMagnitude", LargeStaggerMagnitude);
+		SKSE::log::info("Setting:\"{}\" is {}", "LargestStaggerMagnitude", LargestStaggerMagnitude);
+
+		auto MSLFilesName = GetFiles();
 		for (const auto& fileName : MSLFilesName) {
 			try {
 				json j = json::parse(std::ifstream(fileName));
@@ -30,12 +62,12 @@ namespace ModernStaggerLock
 					quickRecoveryEvents.insert(quickRecoveryEvents.end(), eventLists.begin(), eventLists.end());
 				}
 			} catch (const json::exception& ex) {
-				ERROR("Caught expection when parsing file \"{}\":\n {}", fileName, ex.what());
+				SKSE::log::error("Caught expection when parsing file \"{}\":\n {}", fileName, ex.what());
 			}
 		}
 
-		for (auto eventName : quickRecoveryEvents) {
-			INFO("Get a Quick Recovery Event Name: \"{}\"", eventName);
+		for (const auto& eventName : quickRecoveryEvents) {
+			SKSE::log::info("Got a Quick Recovery Event Name: \"{}\"", eventName);
 		}
 	}
 

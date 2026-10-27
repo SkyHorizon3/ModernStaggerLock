@@ -1,31 +1,18 @@
 #pragma once
-#include "DKUtil/Config.hpp"
-#include "DKUtil/Utility.hpp"
 
 namespace ModernStaggerLock
 {
-	using namespace DKUtil::Alias;
-
-	class MSLSettings : public DKUtil::model::Singleton<MSLSettings>
+	class MSLSettings : public REX::Singleton<MSLSettings>
 	{
-		friend DKUtil::model::Singleton<MSLSettings>;
-
-	private:
+	public:
+		std::vector<std::string> GetFiles();
 		MSLSettings();
 
-		template <class T>
-		static void PrintSettingValue(const T& a_setting)
-		{
-			INFO("Setting:\"{}\" is {}"sv, a_setting.get_key(), a_setting.get_data());
-		}
-
-	public:
-		Boolean DisableJumpWhenStagger{ "DisableJumpWhenStagger", "Control" };
-
-		Double SmallStaggerMagnitude{ "SmallStaggerMagnitude", "StaggerLevel" };
-		Double MediumStaggerMagnitude{ "MediumStaggerMagnitude", "StaggerLevel" };
-		Double LargeStaggerMagnitude{ "LargeStaggerMagnitude", "StaggerLevel" };
-		Double LargestStaggerMagnitude{ "LargestStaggerMagnitude", "StaggerLevel" };
+		bool DisableJumpWhenStagger{ true };
+		float SmallStaggerMagnitude{ 0.0f };
+		float MediumStaggerMagnitude{ 0.5f };
+		float LargeStaggerMagnitude{ 0.75f };
+		float LargestStaggerMagnitude{ 1.0f };
 
 		enum StaggerType : std::int32_t
 		{
